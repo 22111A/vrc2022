@@ -18,7 +18,9 @@ void opcontrol() {
   pros::Motor top_intake (10, true);
   pros::Controller master (CONTROLLER_MASTER);
   pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!2");
+	pros::lcd::set_text(1, "Hello PROS\]=]\ User!2");
+//define a pnumetics controller
+  pros::ADIDigitalOut trigger (1);
   master.clear();
   while (true) {
     left1.move(master.get_analog(ANALOG_LEFT_Y));
@@ -48,6 +50,14 @@ void opcontrol() {
     if (master.get_digital(DIGITAL_Y)){
       shooter.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
       shooter.brake();
+    }
+    if (master.get_digital(DIGITAL_L1)){
+      trigger.set_value(1);
+    }else{
+      trigger.set_value(0);
+    }
+    if (master.get_digital(DIGITAL_L2)){
+      trigger.set_value(0);
     }
     master.print(0, 0, "velocity: %d", int(bottom_intake.get_actual_velocity()));
     // master.print(1, 0, "efficiency: %d", bottom_intake.get_efficiency());
