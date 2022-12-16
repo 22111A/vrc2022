@@ -8,13 +8,14 @@
 //using namespace pros;
 
 void opcontrol() {
-  pros::Motor left1 (10);
-  pros::Motor right1 (1, false); // This reverses the motor
-  pros::Motor right2 (2, true);
-  pros::Motor left2 (9,true);
-  pros::Motor shooter (19, false);
-  pros::Motor intake (12, true);
-  pros::Motor str_launcher (20);
+  pros::Motor left1 (2);
+  pros::Motor right1 (8, true); // This reverses the motor
+  pros::Motor right2 (9, true);
+  pros::Motor left2 (1);
+  pros::Motor shooter (15, false);
+  pros::Motor bottom_intake (14, true);
+  pros::Motor bottom_intake2 (4,false);
+  pros::Motor top_intake (10, true);
   pros::Controller master (CONTROLLER_MASTER);
   pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS\]=]\ User!2");
@@ -28,15 +29,28 @@ void opcontrol() {
     right1.move(master.get_analog(ANALOG_RIGHT_Y));
     right2.move(master.get_analog(ANALOG_RIGHT_Y));
     if (master.get_digital(DIGITAL_A)){
-      intake.move_velocity(-100000);
-      intake.move(127);
+      bottom_intake.move_velocity(-100000);
+      bottom_intake2.move_velocity(-100000);
+      top_intake.move_velocity(100000);
+      top_intake.move(127);
+      bottom_intake.move(127);
+      bottom_intake2.move(127);
     }
     if (master.get_digital(DIGITAL_B)){
-      intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-      intake.brake();
+      bottom_intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+      bottom_intake2.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+      top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+      bottom_intake.brake();
+      bottom_intake2.brake();
+      top_intake.brake();
     }
     if (master.get_digital(DIGITAL_X)){
-      str_launcher.move_relative(100,100);
+      shooter.move_velocity(100000);
+      shooter.move(127);
+    }
+    if (master.get_digital(DIGITAL_Y)){
+      shooter.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+      shooter.brake();
     }
     if (master.get_digital(DIGITAL_UP)){
       trigger.set_value(1);
@@ -45,21 +59,12 @@ void opcontrol() {
       trigger.set_value(0);
     }
     if (master.get_digital(DIGITAL_L1)){
-        shooter.move_velocity(100);
-        shooter.move(-100); // Moves 100 units forward
-
-    }else{
-        shooter.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-        shooter.brake();
+      pusher.set_value(1);
     }
     if (master.get_digital(DIGITAL_L2)){
-        shooter.move_velocity(-100);
-        shooter.move(100); // Moves 100 units forward
-    }else{
-        shooter.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-        shooter.brake(); 
+      pusher.set_value(0);
     }
-    master.print(0, 0, "velocity: %d", int(intake.get_actual_velocity()));
+    master.print(0, 0, "velocity: %d", int(bottom_intake.get_actual_velocity()));
     // master.print(1, 0, "efficiency: %d", bottom_intake.get_efficiency());
     // master.print(2, 0, "temperature: %d", bottom_intake.get_temperature());
     // master.print(3, 0, "voltage: %d", bottom_intake.get_voltage());
